@@ -520,7 +520,7 @@ public final class CGTextRenderer: Renderer {
     """)
   }
 
-  func makeText() -> String {
+  public func makeText() -> String {
     var template = """
     extension UIImage {
       static func \(name)(size: CGSize = CGSize(width: \(size.width), height: \(size.height))) -> UIImage {
@@ -546,7 +546,7 @@ public final class CGTextRenderer: Renderer {
     return template
   }
 
-    func makeLinesText() -> String {
+    public func makeLinesText() -> String {
         lines.insert("ctx.scaleBy(x: scale.width, y: scale.height)", at: 0)
         if !patterns.isEmpty {
             lines.insert("let baseCTM = ctx.ctm", at: 0)
