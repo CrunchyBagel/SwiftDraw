@@ -523,7 +523,7 @@ public final class CGTextRenderer: Renderer {
   public func makeText() -> String {
     var template = """
     extension UIImage {
-      fileprivate static func \(name)(size: CGSize) {
+      fileprivate static func \(name)(ctx: CGContext, size: CGSize) {
         let scale = CGSize(width: size.width / \(commandSize.width), height: size.height / \(commandSize.height))
 
     """
