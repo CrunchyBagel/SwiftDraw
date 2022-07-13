@@ -58,7 +58,17 @@ public extension Image {
   func rasterize() -> UIImage {
     return rasterize(with: size)
   }
-  
+
+    #if os(watchOS)
+    func rasterize(with size: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        defer { UIGraphicsEndImageContext() }
+        let context = UIGraphicsGetCurrentContext()!
+        context.draw(self, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+
+        return UIGraphicsGetImageFromCurrentImageContext()!
+    }
+    #else
   private func makeFormat() -> UIGraphicsImageRendererFormat {
     guard #available(iOS 12.0, *) else {
       let f = UIGraphicsImageRendererFormat.default()
@@ -78,6 +88,7 @@ public extension Image {
       $0.cgContext.draw(self, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
     }
   }
+    #endif
 
   func pngData(size: CGSize? = nil, scale: CGFloat = 1) -> Data? {
     let pngSize = size ?? self.size
