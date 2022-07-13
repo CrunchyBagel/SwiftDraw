@@ -536,11 +536,6 @@ public final class CGTextRenderer: Renderer {
 
     """
 
-    lines.insert("ctx.scaleBy(x: scale.width, y: scale.height)", at: 0)
-    if !patterns.isEmpty {
-        lines.insert("let baseCTM = ctx.ctm", at: 0)
-    }
-
     template.append(makeLinesText())
     template.append("\n  }\n}")
     return template
