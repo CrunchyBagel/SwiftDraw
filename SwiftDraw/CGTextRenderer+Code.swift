@@ -40,7 +40,7 @@ public extension CGTextRenderer {
         return render(fileURL: url, size: size)
     }
 
-    static func render(fileURL: URL, size: Size? = nil) -> String? {
+    static func renderer(fileURL: URL, size: Size? = nil) -> CGTextRenderer? {
         guard let svg = try? DOM.SVG.parse(fileURL: fileURL) else {
             return nil
         }
@@ -56,10 +56,14 @@ public extension CGTextRenderer {
         return cgCodeText(name: "svg\(identifier)", svg: svg, size: size)
     }
 
+    static func render(fileURL: URL, size: Size? = nil) -> String? {
+        renderer(fileURL: fileURL, size: size)?.makeText()
+    }
+
     static func render(data: Data) throws -> String {
         let svg = try DOM.SVG.parse(data: data)
         let size = makeSize(svg: svg, size: nil)
-        return cgCodeText(name: "svgImage", svg: svg, size: size)
+        return cgCodeText(name: "svgImage", svg: svg, size: size).makeText()
     }
 
     static func renderPath(from svgPath: String) throws -> String {
@@ -75,7 +79,7 @@ public extension CGTextRenderer {
         return LayerTree.Size(LayerTree.Float(size.width), LayerTree.Float(size.height))
     }
 
-    private static func cgCodeText(name: String, svg: DOM.SVG, size: LayerTree.Size) -> String {
+    private static func cgCodeText(name: String, svg: DOM.SVG, size: LayerTree.Size) -> CGTextRenderer {
         let layer = LayerTree.Builder(svg: svg).makeLayer()
         let commandSize = LayerTree.Size(svg.width, svg.height)
         let generator = LayerTree.CommandGenerator(provider: CGTextProvider(),
@@ -89,6 +93,6 @@ public extension CGTextRenderer {
         let renderer = CGTextRenderer(name: name, size: size, commandSize: commandSize)
         renderer.perform(commands)
 
-        return renderer.makeText()
+        return renderer
     }
 }

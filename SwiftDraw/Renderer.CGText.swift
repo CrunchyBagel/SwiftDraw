@@ -541,12 +541,22 @@ public final class CGTextRenderer: Renderer {
         lines.insert("let baseCTM = ctx.ctm", at: 0)
     }
 
-    let indent = String(repeating: " ", count: 4)
-    let lines = self.lines.map { "\(indent)\($0)" }
-    template.append(lines.joined(separator: "\n"))
+    template.append(makeLinesText())
     template.append("\n  }\n}")
     return template
   }
+
+    func makeLinesText() -> String {
+        lines.insert("ctx.scaleBy(x: scale.width, y: scale.height)", at: 0)
+        if !patterns.isEmpty {
+            lines.insert("let baseCTM = ctx.ctm", at: 0)
+        }
+
+        let indent = String(repeating: " ", count: 4)
+        let lines = self.lines.map { "\(indent)\($0)" }
+
+        return lines.joined(separator: "\n")
+    }
 }
 
 extension String.StringInterpolation {
