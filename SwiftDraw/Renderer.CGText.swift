@@ -523,16 +523,16 @@ public final class CGTextRenderer: Renderer {
   public func makeText() -> String {
     var template = """
     extension UIImage {
-      static func \(name)(size: CGSize = CGSize(width: \(size.width), height: \(size.height))) -> UIImage {
+      fileprivate static func \(name)(size: CGSize = CGSize(width: \(size.width), height: \(size.height))) -> UIImage {
         let f = UIGraphicsImageRendererFormat.preferred()
         f.opaque = false
         let scale = CGSize(width: size.width / \(commandSize.width), height: size.height / \(commandSize.height))
         return UIGraphicsImageRenderer(size: size, format: f).image {
-          drawSVG(in: $0.cgContext, scale: scale)
+          drawSVG_\(name)(in: $0.cgContext, scale: scale)
         }
       }
 
-      private static func drawSVG(in ctx: CGContext, scale: CGSize) {
+      private static func drawSVG_\(name)(in ctx: CGContext, scale: CGSize) {
 
     """
 
