@@ -523,35 +523,23 @@ public final class CGTextRenderer: Renderer {
   public func makeText() -> String {
     var template = """
     extension UIImage {
-      fileprivate static func \(name)(size: CGSize = CGSize(width: \(size.width), height: \(size.height))) -> UIImage {
-        let f = UIGraphicsImageRendererFormat.preferred()
-        f.opaque = false
+      fileprivate static func \(name)(size: CGSize) {
         let scale = CGSize(width: size.width / \(commandSize.width), height: size.height / \(commandSize.height))
-        return UIGraphicsImageRenderer(size: size, format: f).image {
-          drawSVG_\(name)(in: $0.cgContext, scale: scale)
-        }
-      }
-
-      private static func drawSVG_\(name)(in ctx: CGContext, scale: CGSize) {
 
     """
 
-    template.append(makeLinesText())
-    template.append("\n  }\n}")
-    return template
+      lines.insert("ctx.scaleBy(x: scale.width, y: scale.height)", at: 0)
+      if !patterns.isEmpty {
+          lines.insert("let baseCTM = ctx.ctm", at: 0)
+      }
+
+      let indent = String(repeating: " ", count: 4)
+      let lines = self.lines.map { "\(indent)\($0)" }
+
+      template.append(lines.joined(separator: "\n"))
+      template.append("\n  }\n}")
+      return template
   }
-
-    public func makeLinesText() -> String {
-        lines.insert("ctx.scaleBy(x: scale.width, y: scale.height)", at: 0)
-        if !patterns.isEmpty {
-            lines.insert("let baseCTM = ctx.ctm", at: 0)
-        }
-
-        let indent = String(repeating: " ", count: 4)
-        let lines = self.lines.map { "\(indent)\($0)" }
-
-        return lines.joined(separator: "\n")
-    }
 }
 
 extension String.StringInterpolation {
